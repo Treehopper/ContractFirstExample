@@ -67,5 +67,6 @@
 
     <modules>
         <module>rest-client-java</module>
+        <module>cli-client</module>
     </modules>
 </project>

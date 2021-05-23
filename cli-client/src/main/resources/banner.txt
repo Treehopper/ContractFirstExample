@@ -1,0 +1,2 @@
+CLI Client
+:: ${project.name} :: (v${project.version})
