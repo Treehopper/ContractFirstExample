@@ -1,0 +1,249 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "OpenWeatherApi",
+    "description": "See https://openweathermap.org/api",
+    "version": "2.5"
+  },
+  "servers": [
+    {
+      "url": "https://api.openweathermap.org/data/2.5",
+      "description": "SwaggerHub API Auto Mocking"
+    }
+  ],
+  "tags": [
+    {
+      "name": "admins",
+      "description": "Secured Admin-only calls"
+    },
+    {
+      "name": "developers",
+      "description": "Operations available to regular developers"
+    }
+  ],
+  "paths": {
+    "/forecast": {
+      "get": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "searches inventory",
+        "description": "You can search weather forecast for 5 days with data every 3 hours by city ID.\nForecast is available in JSON or XML format.\n",
+        "operationId": "searchInventory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "city id",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "appid",
+            "in": "query",
+            "description": "secret appid",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "description": "json vs xml",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "units",
+            "in": "query",
+            "description": "metric vs bullshit",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "description": "language",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Forecasts"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Forecasts": {
+        "required": [
+          "cnt",
+          "cod",
+          "list",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "cod": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "cnt": {
+            "type": "integer"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Forecast"
+            }
+          },
+          "city": {
+            "type": "object"
+          }
+        }
+      },
+      "Forecast": {
+        "type": "object",
+        "properties": {
+          "dt": {
+            "type": "string",
+            "description": "Time of data forecasted, unix, UTC"
+          },
+          "main": {
+            "$ref": "#/components/schemas/Forecast_main"
+          },
+          "weather": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Weather"
+            }
+          },
+          "clouds": {
+            "type": "object"
+          },
+          "wind": {
+            "$ref": "#/components/schemas/Wind"
+          },
+          "visibility": {
+            "type": "integer"
+          },
+          "pop": {
+            "type": "number",
+            "format": "float"
+          },
+          "rain": {
+            "type": "object"
+          },
+          "sys": {
+            "type": "object"
+          },
+          "dt_txt": {
+            "type": "string"
+          }
+        }
+      },
+      "Wind": {
+        "type": "object",
+        "properties": {
+          "speed": {
+            "type": "number",
+            "format": "float"
+          },
+          "deg": {
+            "maximum": 360,
+            "minimum": 0,
+            "type": "integer"
+          }
+        }
+      },
+      "Weather": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "main": {
+            "type": "string",
+            "description": "Group of weather parameters (Rain, Snow, Extreme etc.)"
+          },
+          "description": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          }
+        }
+      },
+      "Forecast_main": {
+        "type": "object",
+        "properties": {
+          "temp": {
+            "type": "string",
+            "description": "Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit."
+          },
+          "feels_like": {
+            "type": "string"
+          },
+          "temp_min": {
+            "type": "string"
+          },
+          "temp_max": {
+            "type": "string"
+          },
+          "pressure": {
+            "type": "string"
+          },
+          "sea_level": {
+            "type": "string"
+          },
+          "grnd_level": {
+            "type": "string"
+          },
+          "humidity": {
+            "type": "string"
+          },
+          "temp_kf": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
