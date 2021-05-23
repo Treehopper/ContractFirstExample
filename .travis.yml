@@ -1,0 +1,13 @@
+language: java
+jdk:
+ - openjdk15
+
+script:
+- mvn clean package -DexcludedGroups=slow -Dlicense.skipDownloadLicenses=true
+
+notifications:
+ email:
+   recipients:
+    - travis-ci.openapi@hohenegger.eu
+   on_success: change
+   on_failure: always
