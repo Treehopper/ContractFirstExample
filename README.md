@@ -1,1 +1,1 @@
-# ContractFirstExample
+# OpenAPI Contract First Code Generator Example
