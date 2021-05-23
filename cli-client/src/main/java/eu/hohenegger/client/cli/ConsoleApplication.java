@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import org.moduliths.Modulith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import eu.hohenegger.contract.client.internal.api.DefaultApi;
+import eu.hohenegger.contract.client.internal.impl.ApiClient;
+import eu.hohenegger.contract.client.internal.model.Forecast;
+import eu.hohenegger.contract.client.internal.model.Forecasts;
+
+@Modulith
 @SpringBootApplication
 @EnableConfigurationProperties({ ClientConfigurationProperties.class })
 public class ConsoleApplication implements ApplicationRunner {
-
-    private static final int EXPECTED_CMD_COUNT = 1;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleApplication.class);
 
@@ -45,6 +50,15 @@ public class ConsoleApplication implements ApplicationRunner {
         final File workingDir = new File(System.getProperty("user.dir"));
         
         String optionValue = getMandatoryOptionValue(optionNames.iterator().next());
+
+        LOGGER.info("Hello World: {} - {} - {} - {}" + command, optionValue, workingDir, properties.getBackend(), "");
+
+        DefaultApi developersApi = new DefaultApi();
+        Forecasts forecasts = developersApi.getForecasts("6556328", "secret", "json", "metric", "en");
+        Forecast forecast = forecasts.getList().iterator().next();
+        
+        LOGGER.info("Wind: {}" + forecast.getWind(), "");
+        
     }
 
     public String getMandatoryOptionValue(String optionName) {

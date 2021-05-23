@@ -1,0 +1,151 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/Treehopper/OpenWeatherMap/2.5
+  - description: SwaggerHub API Auto Mocking
+    url: https://api.openweathermap.org/data/2.5
+info:
+  description: See https://openweathermap.org/api
+  version: "2.5"
+  title: OpenWeatherApi
+paths:
+  /forecast:
+    get:
+      summary: gets Forecasts
+      operationId: getForecasts
+      description: |
+         You can search weather forecast for 5 days with data every 3 hours by city ID.
+         Forecast is available in JSON or XML format.
+      parameters:
+        - in: query
+          name: id
+          description: city id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: appid
+          description: secret appid
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: mode
+          description: json vs xml
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: units
+          description: metric vs bullshit
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: lang
+          description: language
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forecasts'
+        '400':
+          description: bad input parameter
+components:
+  schemas:
+    Forecasts:
+      type: object
+      required:
+        - cod
+        - message
+        - cnt
+        - list
+      properties:
+        cod:
+          type: integer
+        message:
+          type: string
+        cnt:
+          type: integer
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/Forecast'
+        city:
+          type: object
+    Forecast:
+      type: object
+      properties:
+        dt:
+          type: string
+          description: Time of data forecasted, unix, UTC
+        main:
+          type: object
+          properties:
+            temp:
+              description: 'Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.'
+              type: string
+            feels_like:
+              type: string
+            temp_min:
+              type: string
+            temp_max:
+              type: string
+            pressure:
+              type: string
+            sea_level:
+              type: string
+            grnd_level:
+              type: string
+            humidity:
+              type: string
+            temp_kf:
+              type: string
+        weather:
+          type: array
+          items:
+            $ref: '#/components/schemas/Weather'
+        clouds:
+          type: object
+        wind:
+            $ref: '#/components/schemas/Wind'
+        visibility:
+          type: integer
+        pop:
+          type: number
+          format: float
+        rain:
+          type: object
+        sys:
+          type: object
+        dt_txt:
+          type: string
+    Wind:
+      type: object
+      properties:
+        speed:
+          type: number
+          format: float
+        deg:
+          type: integer
+          minimum: 0
+          maximum: 360
+    Weather:
+      type: object
+      properties:
+        id:
+          type: string
+        main:
+          type: string
+          description: Group of weather parameters (Rain, Snow, Extreme etc.)
+        description:
+          type: string
+        icon:
+          type: string
