@@ -1,6 +1,7 @@
 package eu.hohenegger.client.cli;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +20,10 @@ import eu.hohenegger.contract.client.internal.impl.ApiClient;
 import eu.hohenegger.contract.client.internal.model.Forecast;
 import eu.hohenegger.contract.client.internal.model.Forecasts;
 import eu.hohenegger.contract.client.internal.model.Wind;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 @Modulith
 @SpringBootApplication
@@ -60,14 +65,41 @@ public class ConsoleApplication implements ApplicationRunner {
         LOGGER.info("Hello World: {} - {} - {} - {}" + command, optionValue, workingDir, properties.getBackend(), "");
 
         DefaultApi developersApi = new DefaultApi();
+
+        // Create an interceptor which catches requests and logs the info you want
+        Interceptor logRequests= new Interceptor() {
+
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                    Request request = chain.request();
+
+                    LOGGER.info("Sending request {} on {}{}", 
+                        request.url(), chain.connection(), request.headers());
+
+                    Response response = chain.proceed(request);
+
+                    LOGGER.info("Received response for {} - {}",
+                        response.request().url(), response.headers());
+
+                    return response;
+            }
+        
+        };
+
+        OkHttpClient client = new OkHttpClient.Builder()
+            .addInterceptor(logRequests)
+            .build();
+
+        ApiClient apiClient = new ApiClient(client);
+        apiClient.setBasePath(properties.getBackend().toString());
+        developersApi.setApiClient(apiClient);
         Forecasts forecasts = developersApi.getForecasts("6556328", optionValue, "json", "metric", "en");
         for (Forecast forecast : forecasts.getList()) {
             Wind wind = forecast.getWind();
+            LOGGER.info("Date: {}" + forecast.getDtTxt(), "");
             LOGGER.info("Wind speed: {}" + wind.getSpeed(), "");
             LOGGER.info("Wind direction: {}" + wind.getDeg(), "");
         }
-        
-        
     }
 
     public String getMandatoryOptionValue(String optionName) {
