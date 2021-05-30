@@ -18,6 +18,7 @@ import eu.hohenegger.contract.client.internal.api.DefaultApi;
 import eu.hohenegger.contract.client.internal.impl.ApiClient;
 import eu.hohenegger.contract.client.internal.model.Forecast;
 import eu.hohenegger.contract.client.internal.model.Forecasts;
+import eu.hohenegger.contract.client.internal.model.Wind;
 
 @Modulith
 @SpringBootApplication
@@ -44,20 +45,28 @@ public class ConsoleApplication implements ApplicationRunner {
         this.args = args;
         final List<String> commands = args.getNonOptionArgs();
         final String command = commands.iterator().next();
-
+        if(!"wind".equals(command)) {
+            return;
+        }
         final Set<String> optionNames = args.getOptionNames();
         
         final File workingDir = new File(System.getProperty("user.dir"));
-        
-        String optionValue = getMandatoryOptionValue(optionNames.iterator().next());
+        String firstOption = optionNames.iterator().next();
+        if(!"appid".equals(firstOption)) {
+            return;
+        }
+        String optionValue = getMandatoryOptionValue(firstOption);
 
         LOGGER.info("Hello World: {} - {} - {} - {}" + command, optionValue, workingDir, properties.getBackend(), "");
 
         DefaultApi developersApi = new DefaultApi();
-        Forecasts forecasts = developersApi.getForecasts("6556328", "secret", "json", "metric", "en");
-        Forecast forecast = forecasts.getList().iterator().next();
+        Forecasts forecasts = developersApi.getForecasts("6556328", optionValue, "json", "metric", "en");
+        for (Forecast forecast : forecasts.getList()) {
+            Wind wind = forecast.getWind();
+            LOGGER.info("Wind speed: {}" + wind.getSpeed(), "");
+            LOGGER.info("Wind direction: {}" + wind.getDeg(), "");
+        }
         
-        LOGGER.info("Wind: {}" + forecast.getWind(), "");
         
     }
 
