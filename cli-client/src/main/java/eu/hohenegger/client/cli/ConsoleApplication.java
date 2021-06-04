@@ -1,8 +1,12 @@
 package eu.hohenegger.client.cli;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.moduliths.Modulith;
@@ -49,11 +53,19 @@ public class ConsoleApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         this.args = args;
         final List<String> commands = args.getNonOptionArgs();
+        if(commands.isEmpty()) {
+            LOGGER.error("At least one command expected. Found none.");
+            return;
+        }
         final String command = commands.iterator().next();
         if(!"wind".equals(command)) {
             return;
         }
         final Set<String> optionNames = args.getOptionNames();
+        if(optionNames.isEmpty()) {
+            LOGGER.error("At least one option expected. Found none.");
+            return;
+        }
         
         final File workingDir = new File(System.getProperty("user.dir"));
         String firstOption = optionNames.iterator().next();
@@ -94,11 +106,18 @@ public class ConsoleApplication implements ApplicationRunner {
         apiClient.setBasePath(properties.getBackend().toString());
         developersApi.setApiClient(apiClient);
         Forecasts forecasts = developersApi.getForecasts("6556328", optionValue, "json", "metric", "en");
-        for (Forecast forecast : forecasts.getList()) {
-            Wind wind = forecast.getWind();
-            LOGGER.info("Date: {}" + forecast.getDtTxt(), "");
-            LOGGER.info("Wind speed: {}" + wind.getSpeed(), "");
-            LOGGER.info("Wind direction: {}" + wind.getDeg(), "");
+        Map<String, Set<Forecast>> forecastByDate = forecasts
+            .getList()
+            .stream()
+            .collect(groupingBy(fc -> fc.getDtTxt().substring(0, 10), toSet()));
+        for (String date : forecastByDate.keySet()) {
+            LOGGER.info("Date: {}" + date, "");
+            for (Forecast forecast : forecastByDate.get(date)) {
+                Wind wind = forecast.getWind();
+                LOGGER.info("Time: {}" + forecast.getDtTxt().substring(10), "");
+                LOGGER.info("Wind speed: {}" + wind.getSpeed(), "");
+                LOGGER.info("Wind direction: {}" + wind.getDeg(), "");
+            }
         }
     }
 
