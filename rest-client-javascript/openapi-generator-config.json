@@ -1,0 +1,8 @@
+{
+    "apiPackage": "eu.hohenegger.contract.client.internal.api",
+    "modelPackage": "eu.hohenegger.contract.client.internal.model",
+    "invokerPackage": "eu.hohenegger.contract.client.internal.impl",
+    "snapshotVersion": true,
+    "sourceFolder": "javascript",
+    "hideGenerationTimestamp": true
+}

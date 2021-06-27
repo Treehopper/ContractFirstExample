@@ -81,6 +81,7 @@
 
     <modules>
         <module>rest-client-java</module>
+        <module>rest-client-javascript</module>
         <module>cli-client</module>
     </modules>
 </project>
