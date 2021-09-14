@@ -27,9 +27,9 @@
         "tags": [
           "developers"
         ],
-        "summary": "searches inventory",
+        "summary": "gets Forecasts",
         "description": "You can search weather forecast for 5 days with data every 3 hours by city ID.\nForecast is available in JSON or XML format.\n",
-        "operationId": "searchInventory",
+        "operationId": "getForecasts",
         "parameters": [
           {
             "name": "id",
