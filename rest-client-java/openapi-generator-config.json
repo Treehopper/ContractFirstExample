@@ -6,6 +6,6 @@
     "sourceFolder": "java",
     "hideGenerationTimestamp": true,
     "java8": true,
-    "library": "retrofit2",
+    "library": "native",
     "dateLibrary": "java8"
 }
