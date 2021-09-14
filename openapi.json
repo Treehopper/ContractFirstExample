@@ -7,6 +7,10 @@
   },
   "servers": [
     {
+      "url": "https://virtserver.swaggerhub.com/Treehopper/OpenWeatherMap/2.5",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
       "url": "https://api.openweathermap.org/data/2.5",
       "description": "SwaggerHub API Auto Mocking"
     }
@@ -93,10 +97,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Forecasts"
-                  }
+                  "$ref": "#/components/schemas/Forecasts"
                 }
               }
             }
@@ -190,6 +191,10 @@
             "maximum": 360,
             "minimum": 0,
             "type": "integer"
+          },
+          "gust": {
+            "type": "number",
+            "format": "float"
           }
         }
       },
