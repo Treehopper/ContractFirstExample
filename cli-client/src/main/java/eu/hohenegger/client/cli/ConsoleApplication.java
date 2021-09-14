@@ -1,5 +1,8 @@
 package eu.hohenegger.client.cli;
 
+import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -74,16 +77,30 @@ public class ConsoleApplication implements ApplicationRunner {
                 LOGGER.error("Unexpected status: " + withHttpInfo.getStatusCode());
                 return;
             }
-            System.out.println("Date, Speed, Degrees, Gusts");
-            for (Forecast forecast : withHttpInfo.getData().getList()) {
+            System.out.println(
+                        "Date, " +
+                        "Speed (meter/sec), " +
+                        "Degrees, " +
+                        "Gusts (meter/sec), " +
+                        "Probability of precipitation, " +
+                        "Rain (Rain volume for last 3 hours - mm), " +
+                        "Snow (Snow volume for last 3 hours), "
+                    );
+            withHttpInfo.getData().getList().forEach( forecast -> {
                 Wind wind = forecast.getWind();
-                System.out.println(String.format("%s, %.2f, %03d, %.2f",
-                            forecast.getDtTxt(),
-                            wind.getSpeed(),
-                            wind.getDeg(),
-                            wind.getGust())
+                System.out.println(
+                        format("%s, %.2f, %03d, %.2f, %.2f, %.2f, %.2f",
+                                forecast.getDtTxt(),
+                                wind.getSpeed(),
+                                wind.getDeg(),
+                                wind.getGust(),
+                                forecast.getPop(),
+                                (ofNullable(forecast.getRain()).isPresent()) ? forecast
+                                        .getRain().get3h() : 0,
+                                        (ofNullable(forecast.getSnow()).isPresent()) ? forecast
+                                                .getSnow().get3h() : 0)
                         );
-            }
+            });
         } catch (ApiException e) {
             LOGGER.error("Unable to fetch data", e);
         }

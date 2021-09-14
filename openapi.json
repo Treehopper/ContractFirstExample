@@ -167,10 +167,14 @@
           },
           "pop": {
             "type": "number",
+            "description": "Probability of precipitation",
             "format": "float"
           },
           "rain": {
-            "type": "object"
+            "$ref": "#/components/schemas/3hRain"
+          },
+          "snow": {
+            "$ref": "#/components/schemas/3hSnow"
           },
           "sys": {
             "type": "object"
@@ -180,20 +184,43 @@
           }
         }
       },
+      "3hRain": {
+        "type": "object",
+        "properties": {
+          "3h": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "description": "Rain volume for last 3 hours, mm"
+      },
+      "3hSnow": {
+        "type": "object",
+        "properties": {
+          "3h": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "description": "Snow volume for last 3 hours"
+      },
       "Wind": {
         "type": "object",
         "properties": {
           "speed": {
             "type": "number",
+            "description": "Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.",
             "format": "float"
           },
           "deg": {
             "maximum": 360,
             "minimum": 0,
-            "type": "integer"
+            "type": "integer",
+            "description": "Wind direction, degrees (meteorological)"
           },
           "gust": {
             "type": "number",
+            "description": "Wind gust. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour",
             "format": "float"
           }
         }
