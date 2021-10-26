@@ -2,5 +2,5 @@
 
 ## Run CLI Client
 ```
-$ java -jar cli-client.jar foo --bar=hello
+$ java -jar cli-client.jar wind --appid=secret
 ```

@@ -1,6 +1,5 @@
 package eu.hohenegger.client.cli;
 
-import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
 import java.io.File;
@@ -8,6 +7,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
+import org.moduliths.Modulith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,13 @@ import eu.hohenegger.contract.client.internal.api.DevelopersApi;
 import eu.hohenegger.contract.client.internal.impl.ApiClient;
 import eu.hohenegger.contract.client.internal.impl.ApiException;
 import eu.hohenegger.contract.client.internal.impl.ApiResponse;
-import eu.hohenegger.contract.client.internal.model.Forecast;
 import eu.hohenegger.contract.client.internal.model.Forecasts;
 import eu.hohenegger.contract.client.internal.model.Wind;
 
+@Modulith
 @SpringBootApplication
 @EnableConfigurationProperties({ ClientConfigurationProperties.class })
 public class ConsoleApplication implements ApplicationRunner {
-
-    private static final int EXPECTED_CMD_COUNT = 1;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleApplication.class);
 
@@ -58,7 +56,7 @@ public class ConsoleApplication implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) {
+    public void run(ApplicationArguments args) throws Exception {
         this.args = args;
         final List<String> commands = args.getNonOptionArgs();
         final String command = commands.iterator().next();
@@ -66,7 +64,7 @@ public class ConsoleApplication implements ApplicationRunner {
         final Set<String> optionNames = args.getOptionNames();
         
         final File workingDir = new File(System.getProperty("user.dir"));
-
+        
         String cityId = getMandatoryOptionValue("cityid");
         String appId = getMandatoryOptionValue("appid");
 
@@ -89,7 +87,7 @@ public class ConsoleApplication implements ApplicationRunner {
             withHttpInfo.getData().getList().forEach( forecast -> {
                 Wind wind = forecast.getWind();
                 System.out.println(
-                        format("%s, %.2f, %03d, %.2f, %.2f, %.2f, %.2f",
+                        String.format("%s, %.2f, %03d, %.2f, %.2f, %.2f, %.2f",
                                 forecast.getDtTxt(),
                                 wind.getSpeed(),
                                 wind.getDeg(),
@@ -108,10 +106,10 @@ public class ConsoleApplication implements ApplicationRunner {
 
     public String getMandatoryOptionValue(String optionName) {
         final List<String> values = args.getOptionValues(optionName);
-        if (values == null || values.isEmpty() || values.get(0)
-                .isEmpty()) {
+        final String result = values.get(0);
+        if (result.isEmpty()) {
             throw new IllegalArgumentException("No value found for option: " + optionName);
         }
-        return values.get(0);
+        return result;
     }
 }

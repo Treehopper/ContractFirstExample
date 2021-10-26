@@ -3,9 +3,6 @@
     "modelPackage": "eu.hohenegger.contract.client.internal.model",
     "invokerPackage": "eu.hohenegger.contract.client.internal.impl",
     "snapshotVersion": true,
-    "sourceFolder": "java",
-    "hideGenerationTimestamp": true,
-    "java8": true,
-    "library": "native",
-    "dateLibrary": "java8"
+    "sourceFolder": "javascript",
+    "hideGenerationTimestamp": true
 }
